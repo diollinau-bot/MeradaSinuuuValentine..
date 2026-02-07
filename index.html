@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Be My Valentine 💖</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&family=Pacifico&display=swap" rel="stylesheet">
+
+<style>
+body {
+  margin: 0;
+  height: 100vh;
+  background: radial-gradient(circle, #ffe0ea, #ffb6c1);
+  font-family: 'Poppins', sans-serif;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  animation: heartbeatBG 3s infinite;
+}
+
+@keyframes heartbeatBG {
+  0%,100% { background-size: 100% 100%; }
+  50% { background-size: 110% 110%; }
+}
+
+.container {
+  text-align: center;
+}
+
+.name {
+  font-family: 'Pacifico', cursive;
+  font-size: 3.8em;
+  color: #b3005e;
+  margin-bottom: 10px;
+  min-height: 1.2em;
+}
+
+.glow {
+  animation: glowPulse 2s infinite;
+}
+
+@keyframes glowPulse {
+  0% { text-shadow: 0 0 5px #ff4d6d; }
+  50% { text-shadow: 0 0 25px #ff4d6d, 0 0 40px #ff99aa; }
+  100% { text-shadow: 0 0 5px #ff4d6d; }
+}
+
+.cursor {
+  border-right: 3px solid #b3005e;
+  padding-right: 5px;
+  animation: blink 0.8s infinite;
+}
+
+@keyframes blink {
+  50% { border-color: transparent; }
+}
+
+h1 {
+  color: #b3005e;
+  font-size: 2.2em;
+}
+
+.buttons {
+  position: relative;
+  width: 360px;
+  height: 260px;
+  margin: auto;
+}
+
+button {
+  padding: 15px 35px;
+  font-size: 1.3em;
+  border: none;
+  border-radius: 40px;
+  cursor: pointer;
+  position: absolute;
+  transition: all 0.4s ease;
+}
+
+#yesBtn {
+  background: #ff4d6d;
+  color: white;
+  left: 50%;
+  top: 70%;
+  transform: translate(-50%, -50%);
+  box-shadow: 0 0 20px #ff8fa3;
+}
+
+#noBtn {
+  background: #bbb;
+  color: white;
+  left: 50%;
+  top: 25%;
+  transform: translate(-50%, -50%);
+}
+
+.hidden {
+  display: none;
+}
+
+/* 🌧️ Emoji rain */
+.rain {
+  position: absolute;
+  font-size: 2em;
+  pointer-events: none;
+  animation: rainFall 3s linear forwards;
+}
+
+@keyframes rainFall {
+  0% { transform: translateY(-10vh); opacity: 1; }
+  100% { transform: translateY(110vh); opacity: 0; }
+}
+
+/* 💥 Heart explosion */
+.heart {
+  position: absolute;
+  font-size: 2em;
+  pointer-events: none;
+  animation: explode 1.2s ease-out forwards;
+}
+
+@keyframes explode {
+  0% { transform: scale(0); opacity: 1; }
+  100% {
+    transform: scale(1.6) translate(var(--x), var(--y));
+    opacity: 0;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<!-- 🎵 MUSIC -->
+<audio id="bgMusic" loop>
+  <source src="lover.mp3" type="audio/mpeg">
+</audio>
+
+<div class="container" id="mainPage">
+  <div class="name">
+    <span id="typing"></span><span class="cursor"></span>
+  </div>
+
+  <h1>Will you be my Valentine 🥹❤️</h1>
+
+  <div class="buttons">
+    <button id="yesBtn">YES 💖</button>
+    <button id="noBtn">NO 🥺</button>
+  </div>
+</div>
+
+<div class="container hidden" id="yesPage">
+  <h1>Awwwww I Love You Sinuuuuuu 🥹❤️😘</h1>
+  <p style="font-size:1.4em;color:#8b004f;">
+    Thank you for being my blessing and my Valentine 💗
+  </p>
+  <p style="font-size:1.2em;color:#b3005e;">
+    💌 Secret message:<br>
+    You are my forever, my always, my home ❤️
+  </p>
+</div>
+
+<script>
+const bgMusic = document.getElementById("bgMusic");
+const yesBtn = document.getElementById("yesBtn");
+const noBtn = document.getElementById("noBtn");
+const typing = document.getElementById("typing");
+const mainPage = document.getElementById("mainPage");
+const yesPage = document.getElementById("yesPage");
+
+let musicStarted = false;
+let noScale = 1;
+let yesScale = 1;
+
+/* ✍️ Typing + glow */
+const text = "Sinuuuu";
+let i = 0;
+function typeName() {
+  if (i < text.length) {
+    typing.textContent += text[i];
+    i++;
+    setTimeout(typeName, 180);
+  } else {
+    typing.parentElement.classList.add("glow");
+  }
+}
+typeName();
+
+/* 🎵 Fade-in music */
+function startMusicFadeIn() {
+  if (musicStarted) return;
+  musicStarted = true;
+
+  bgMusic.volume = 0;
+  bgMusic.play();
+
+  let v = 0;
+  const fade = setInterval(() => {
+    if (v < 0.6) {
+      v += 0.02;
+      bgMusic.volume = v;
+    } else {
+      bgMusic.volume = 0.6;
+      clearInterval(fade);
+    }
+  }, 200);
+
+  document.removeEventListener("click", startMusicFadeIn);
+}
+document.addEventListener("click", startMusicFadeIn);
+
+/* NO moves */
+noBtn.addEventListener("mouseenter", () => {
+  const box = document.querySelector(".buttons");
+  const x = Math.random() * (box.clientWidth - noBtn.offsetWidth);
+  const y = Math.random() * (box.clientHeight - noBtn.offsetHeight);
+
+  noScale = Math.max(0.4, noScale - 0.08);
+  yesScale = Math.min(1.8, yesScale + 0.08);
+
+  noBtn.style.left = x + "px";
+  noBtn.style.top = y + "px";
+  noBtn.style.transform = `scale(${noScale})`;
+  yesBtn.style.transform = `translate(-50%, -50%) scale(${yesScale})`;
+});
+
+/* 🌧️ Emoji rain */
+function emojiRain() {
+  const emojis = ["❤️","💖","💗","🥹","🎀","💕","💘"];
+  for (let i = 0; i < 60; i++) {
+    setTimeout(() => {
+      const e = document.createElement("div");
+      e.className = "rain";
+      e.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+      e.style.left = Math.random() * 100 + "vw";
+      document.body.appendChild(e);
+      setTimeout(() => e.remove(), 3000);
+    }, i * 80);
+  }
+}
+
+/* YES clicked */
+yesBtn.addEventListener("click", () => {
+  mainPage.classList.add("hidden");
+  yesPage.classList.remove("hidden");
+  emojiRain();
+  heartExplosion(innerWidth / 2, innerHeight / 2);
+});
+
+/* 💥 Hearts */
+function heartExplosion(x, y) {
+  const hearts = ["❤️","💗","💖","💕"];
+  for (let i = 0; i < 25; i++) {
+    const h = document.createElement("div");
+    h.className = "heart";
+    h.textContent = hearts[Math.floor(Math.random() * hearts.length)];
+    h.style.left = x + "px";
+    h.style.top = y + "px";
+    h.style.setProperty("--x", (Math.random()*300-150)+"px");
+    h.style.setProperty("--y", (Math.random()*300-150)+"px");
+    document.body.appendChild(h);
+    setTimeout(() => h.remove(), 1200);
+  }
+}
+</script>
+
+</body>
+</html>
